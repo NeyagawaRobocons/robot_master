@@ -45,7 +45,7 @@
 
 ## msgs, srvs, actions
 ### relate to chassis
-- OdometerData.msg
+- nucleo_agent/OdometerData.msg
     - description: this message gives the odometry counts of the odometers.
     - fields:
 ```
@@ -62,7 +62,36 @@ float64[3] angular_vel # 各計測輪の角速度
 ```
 # パスとフィードバックのデータ
 
-it is not defined yet.
+# ゴール定義
+pure_pursuit/Path2DWithAngles path_with_angles
+int32[] feedback_indices
+---
+# 結果定義
+int32 final_index
+---
+# フィードバック定義
+int32 current_index
+
+```
+
+- pure_pursuit/PointAndAngle.msg
+    - description: this message gives the point and angle data.
+    - fields:
+```
+# PointAndAngle.msg
+
+float64 x # [m]
+float64 y # [m]
+float64 theta # [rad]
+```
+
+- pure_pursuit/Path2DWithAngles.msg
+    - description: this message gives the path and feedback for the robot.
+    - fields:
+```
+# Path2DWithAngles.msg
+
+PointAndAngle[] path_with_angles
 ```
 
 ### relate to mechanism
@@ -71,6 +100,7 @@ it is not defined yet.
     - fields:
 
 ```
+
 # スイッチの状態のデータ
 
 std_msgs/Header header

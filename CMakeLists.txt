@@ -8,10 +8,22 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(pure_pursuit REQUIRED)
-find_package(mecha_control REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+# find_package(pure_pursuit REQUIRED)
+# find_package(mecha_control REQUIRED)
+# find_package(robot_master REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+# set(action_files
+#   "action/PathAndFeedback.action"
+# )
+# rosidl_generate_interfaces(${PROJECT_NAME}
+#   ${action_files}
+#   DEPENDENCIES pure_pursuit
+# )
 
 add_executable(robot_master_node src/robot_master_node.cpp)
 target_include_directories(robot_master_node PUBLIC
@@ -21,13 +33,36 @@ target_compile_features(robot_master_node PUBLIC c_std_99 cxx_std_17)  # Require
 ament_target_dependencies(
   robot_master_node
   "rclcpp"
-  "pure_pursuit"
-  "mecha_control"
+  "rclcpp_action"
+  "rclcpp_components"
+  # "pure_pursuit"
+  # "mecha_control"
   "std_msgs"
   "geometry_msgs"
+  # "robot_master"
+  "rosidl_default_runtime"
 )
-
 install(TARGETS robot_master_node
+  DESTINATION lib/${PROJECT_NAME})
+
+add_executable(action_server src/action_server.cpp)
+target_include_directories(action_server PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(action_server PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  action_server
+  "rclcpp"
+  "rclcpp_action"
+  "rclcpp_components"
+  # "pure_pursuit"
+  # "mecha_control"
+  "std_msgs"
+  "geometry_msgs"
+  # "robot_master"
+  "rosidl_default_runtime"
+)
+install(TARGETS action_server
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
